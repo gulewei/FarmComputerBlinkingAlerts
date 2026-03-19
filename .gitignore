@@ -1,0 +1,12 @@
+bin/
+obj/
+*.zip
+*.dll
+*.pdb
+*.config
+.vs/
+.DS_Store
+*.user
+*.suo
+*.cache
+*.swp

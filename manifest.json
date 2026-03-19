@@ -1,0 +1,10 @@
+{
+  "Name": "FarmComputerBlinkingAlerts",
+  "Author": "gulewei",
+  "Version": "1.0.0",
+  "Description": "Makes the Farm Computer pulse with an aura when there are crops ready, machines finished, or hay is empty.",
+  "UniqueID": "gulewei.FarmComputerBlinkingAlerts",
+  "EntryDll": "FarmComputerBlinkingAlerts.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": []
+}
