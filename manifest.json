@@ -1,7 +1,7 @@
 {
   "Name": "FarmComputerBlinkingAlerts",
   "Author": "gulewei",
-  "Version": "1.1.0",
+  "Version": "%ProjectVersion%",
   "Description": "Makes the Farm Computer pulse with an aura when there are crops ready, machines finished, or hay empty. Casks only alert at iridium quality.",
   "UniqueID": "gulewei.FarmComputerBlinkingAlerts",
   "EntryDll": "FarmComputerBlinkingAlerts.dll",

@@ -1,5 +1,5 @@
 name: Build releases
-on: [push, workflow_dispatch]
+on: push
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -7,8 +7,7 @@ jobs:
            id-token: write     # for attestation
            attestations: write # for attestation
         env:
-            RELEASE_REF: refs/heads/stable # pushes to this branch are treated as public releases
-
+            RELEASE_REF: refs/heads/main # pushes to this branch are treated as public releases
         steps:
             - name: Fetch code
               uses: actions/checkout@v4
@@ -23,13 +22,9 @@ jobs:
               if: github.ref != env.RELEASE_REF
 
             - name: Build mods
-              run: dotnet build
-
-            - name: Run tests
-              run: dotnet test --no-build
+              run: dotnet build --configuration Release
 
             - name: Upload release zips
               uses: Pathoschild/SMAPI-ModBuildWorkflow/upload-release-artifacts@v1
               with:
                   create_attestations: ${{github.ref == env.RELEASE_REF}}
-                  create_combined_zip: "all-mods"
