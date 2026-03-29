@@ -10,6 +10,14 @@ namespace FarmComputerBlinkingAlerts
     /// <summary>Scans the farm for things that need the player's attention.</summary>
     public class FarmScanner
     {
+        private readonly ModConfig config;
+
+        /// <summary>Initializes a new instance of the <see cref="FarmScanner"/> class.</summary>
+        /// <param name="config">The mod configuration.</param>
+        public FarmScanner(ModConfig config)
+        {
+            this.config = config;
+        }
         // Helper methods for type identification
         private bool IsCask(StardewValley.Object obj)
         {
@@ -29,7 +37,8 @@ namespace FarmComputerBlinkingAlerts
                 return false;
 
             // Quality values: 0 = normal, 1 = silver, 2 = gold, 4 = iridium
-            return cask.heldObject.Value.Quality >= 4;
+            // Use configurable minimum quality threshold
+            return cask.heldObject.Value.Quality >= config.CaskMinimumQuality;
         }
         /// <summary>Scans for all things that need attention.</summary>
         /// <returns>A list of alert messages describing what needs attention.</returns>
@@ -37,12 +46,17 @@ namespace FarmComputerBlinkingAlerts
         {
             var alerts = new List<string>();
 
-            alerts.AddRange(this.ScanForReadyCrops());
-            alerts.AddRange(this.ScanForReadyMachines());
+            if (config.EnableCropScanning)
+                alerts.AddRange(this.ScanForReadyCrops());
+
+            if (config.EnableMachineScanning)
+                alerts.AddRange(this.ScanForReadyMachines());
+
             // alerts.AddRange(this.ScanForAnimalProducts());
             // alerts.AddRange(this.ScanForReadyFruitTrees());
             // alerts.AddRange(this.ScanForReadyCrabPots());
-            if (this.ScanForEmptyHay())
+
+            if (config.EnableHayScanning && this.ScanForEmptyHay())
                 alerts.Add("Hay is empty in the barn/silo");
 
             return alerts;

@@ -44,6 +44,29 @@ If you want to build the mod yourself:
 3. Run `dotnet build` in the project directory.
 4. The built mod will be in the `bin` folder.
 
+## Configuration
+
+The mod can be configured to customize which alerts are enabled and the minimum quality for cask alerts.
+
+### Config File (`config.json`)
+When the mod is first run, it creates a `config.json` file in the mod folder with these options:
+- **EnableCropScanning**: Enable scanning for crops ready to harvest (default: true)
+- **EnableMachineScanning**: Enable scanning for machines that have finished processing (default: true)
+- **EnableHayScanning**: Enable scanning for empty hay in the silo when animals are present (default: true)
+- **CaskMinimumQuality**: Minimum quality level for casks to trigger alerts (0 = normal, 1 = silver, 2 = gold, 4 = iridium, default: 4)
+
+### In-Game Configuration (Recommended)
+For easier configuration, install the [Generic Mod Config Menu](https://www.nexusmods.com/stardewvalley/mods/5098) mod. Once installed:
+1. Launch Stardew Valley
+2. From the title screen or in-game, click the cogwheel button
+3. Find "Farm Computer Blinking Alerts" in the mod list
+4. Adjust the settings as desired
+
+### Notes
+- Configuration changes take effect on the next daily scan (6:00 AM game time)
+- If you disable all scanning types, the mod will never trigger alerts
+- Cask quality settings allow you to choose when to be notified (e.g., gold or higher)
+
 ## Troubleshooting
 
 - **Aura not appearing**: Make sure you have placed the Farm Computer item somewhere on your farm. The mod only works when the item is placed, not when it's in your inventory.
