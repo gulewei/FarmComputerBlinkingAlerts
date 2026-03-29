@@ -2,6 +2,10 @@
 
 A Stardew Valley mod that makes the Farm Computer pulse with a glowing aura when there are things on your farm that need attention.
 
+## Download
+
+https://www.nexusmods.com/stardewvalley/mods/44170
+
 ## Features
 
 - **Automatic Daily Scanning**: Every morning when you wake up, the mod scans your farm for:
