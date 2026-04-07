@@ -3,13 +3,14 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewValley;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FarmComputerBlinkingAlerts
 {
     /// <summary>Manages the pulsing aura effect around the Farm Computer.</summary>
     public class PulsingAuraEffect
     {
-        private readonly IModHelper helper;
         private readonly IMonitor monitor;
         private bool isPulsing;
         private float pulseTimer;
@@ -28,11 +29,9 @@ namespace FarmComputerBlinkingAlerts
         public float PulseSizeMultiplier { get; set; } = 0.3f;
 
         /// <summary>Initializes a new instance of the <see cref="PulsingAuraEffect"/> class.</summary>
-        /// <param name="helper">Mod helper for accessing APIs.</param>
         /// <param name="monitor">Monitor for logging.</param>
-        public PulsingAuraEffect(IModHelper helper, IMonitor monitor)
+        public PulsingAuraEffect(IMonitor monitor)
         {
-            this.helper = helper;
             this.monitor = monitor;
             this.isPulsing = false;
             this.pulseTimer = 0f;
@@ -45,7 +44,9 @@ namespace FarmComputerBlinkingAlerts
             {
                 this.isPulsing = true;
                 this.pulseTimer = 0f;
+#if DEBUG
                 this.monitor.Log("Started pulsing aura effect.", LogLevel.Debug);
+#endif
             }
         }
 
@@ -55,7 +56,9 @@ namespace FarmComputerBlinkingAlerts
             if (this.isPulsing)
             {
                 this.isPulsing = false;
+#if DEBUG
                 this.monitor.Log("Stopped pulsing aura effect.", LogLevel.Debug);
+#endif
             }
         }
 
@@ -73,21 +76,16 @@ namespace FarmComputerBlinkingAlerts
 
         /// <summary>Draws the aura effect around the Farm Computer.</summary>
         /// <param name="spriteBatch">The sprite batch to draw with.</param>
-        public void Draw(SpriteBatch spriteBatch)
+        /// <param name="farmComputer">The Farm Computer object to draw the aura around.</param>
+        public void Draw(SpriteBatch spriteBatch, StardewValley.Object? farmComputer)
         {
             if (!this.isPulsing)
-            {
-                this.monitor.Log("Draw called but not pulsing.", LogLevel.Trace);
                 return;
-            }
 
-            this.monitor.Log("Drawing pulsing aura.", LogLevel.Trace);
-
-            // Find the Farm Computer object
-            var farmComputer = this.FindFarmComputer();
             if (farmComputer == null)
             {
-                this.monitor.Log("Farm Computer not found for aura drawing.", LogLevel.Debug);
+                // Computer not found, stop pulsing
+                this.StopPulsing();
                 return;
             }
 
@@ -117,73 +115,6 @@ namespace FarmComputerBlinkingAlerts
             spriteBatch.Draw(this.auraTexture, destination, drawColor);
         }
 
-        /// <summary>Finds the Farm Computer object in the game world.</summary>
-        /// <returns>The Farm Computer object, or null if not found.</returns>
-        private StardewValley.Object? FindFarmComputer()
-        {
-            var farm = Game1.getFarm();
-            if (farm == null)
-            {
-                this.monitor.Log("Farm is null, cannot find Farm Computer.", LogLevel.Debug);
-                return null;
-            }
-
-            // Farm Computer has ParentSheetIndex = 787 (in vanilla Stardew Valley)
-            const int farmComputerId = 787;
-            int totalObjectsChecked = 0;
-            var foundObjects = new List<string>();
-
-            // Check objects on farm
-            foreach (var kvp in farm.objects.Pairs)
-            {
-                totalObjectsChecked++;
-                foundObjects.Add($"{kvp.Value.DisplayName} (ID: {kvp.Value.ParentSheetIndex}) at ({kvp.Key.X}, {kvp.Key.Y})");
-
-                if (kvp.Value.ParentSheetIndex == farmComputerId)
-                {
-                    this.monitor.Log($"Found Farm Computer on farm at ({kvp.Key.X}, {kvp.Key.Y})", LogLevel.Debug);
-                    return kvp.Value;
-                }
-            }
-
-            // Also check in buildings (like sheds) and other locations
-            foreach (var location in Game1.locations)
-            {
-                this.monitor.Log($"Checking location: {location.Name} (has {location.objects.Count()} objects)", LogLevel.Trace);
-
-                foreach (var kvp in location.objects.Pairs)
-                {
-                    totalObjectsChecked++;
-                    foundObjects.Add($"{kvp.Value.DisplayName} (ID: {kvp.Value.ParentSheetIndex}) in {location.Name} at ({kvp.Key.X}, {kvp.Key.Y})");
-
-                    if (kvp.Value.ParentSheetIndex == farmComputerId)
-                    {
-                        this.monitor.Log($"Found Farm Computer in {location.Name} at ({kvp.Key.X}, {kvp.Key.Y})", LogLevel.Debug);
-                        return kvp.Value;
-                    }
-
-                    // Also check by name in case ID is different
-                    if (kvp.Value.DisplayName.Contains("Farm Computer", StringComparison.OrdinalIgnoreCase) ||
-                        kvp.Value.DisplayName.Contains("农场电脑", StringComparison.OrdinalIgnoreCase))
-                    {
-                        this.monitor.Log($"Found object with Farm Computer in name: {kvp.Value.DisplayName} (ID: {kvp.Value.ParentSheetIndex}) in {location.Name}", LogLevel.Debug);
-                        return kvp.Value;
-                    }
-                }
-            }
-
-            this.monitor.Log($"Farm Computer not found. Checked {totalObjectsChecked} objects total.", LogLevel.Debug);
-            if (foundObjects.Count > 0)
-            {
-                this.monitor.Log($"Sample of objects found (first 10): {string.Join(", ", foundObjects.Take(10))}", LogLevel.Debug);
-            }
-            else
-            {
-                this.monitor.Log("No objects found in any location.", LogLevel.Debug);
-            }
-
-            return null;
-        }
 
         /// <summary>Gets the screen position of an object.</summary>
         /// <param name="obj">The object to get the position for.</param>
@@ -257,5 +188,20 @@ namespace FarmComputerBlinkingAlerts
             texture.SetData(colorData);
             this.auraTexture = texture;
         }
+
+        /// <summary>Clears the aura texture cache.</summary>
+        public void ClearTextureCache()
+        {
+            if (this.auraTexture != null && !this.auraTexture.IsDisposed)
+            {
+                this.auraTexture.Dispose();
+                this.auraTexture = null;
+#if DEBUG
+                this.monitor.Log("Cleared aura texture cache.", LogLevel.Debug);
+#endif
+            }
+        }
+
+
     }
 }
