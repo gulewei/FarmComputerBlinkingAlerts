@@ -122,3 +122,17 @@ The mod supports configurable scanning options via `config.json` and an in-game 
 - `FarmScanner` receives the `ModConfig` instance in its constructor
 - `ScanAll()` method checks configuration before adding alerts for each scan type
 - `IsCaskReadyForHarvest()` uses `config.CaskMinimumQuality` instead of hardcoded value
+
+## Recent Fixes and Improvements
+
+### Version 1.1.1 (2026-04-08)
+- **Multi-tile interaction detection**: Fixed interaction detection for 2x2 big craftable Farm Computer by checking adjacent tiles (3x3 area around cursor)
+- **Console log optimization**: Removed verbose debug logs from production builds (`#if DEBUG` wrappers ensure logs only appear in DEBUG builds)
+- **Interaction handler cleanup**: Simplified `IsInteractingWithFarmComputer` method with adjacent tile checking instead of bounding box calculation
+- **Performance improvements**: Eliminated console spam that could cause large log files (>2.5GB) in previous versions
+
+### Key Technical Changes
+- **InteractionHandler.cs**: Added 3x3 adjacent tile checking for multi-tile objects
+- **ModEntry.cs**: Removed verbose `OnUpdateTicked` and `OnRendered` debug logs
+- **FarmComputerTracker.cs**: Removed `Using tracked Farm Computer` debug log
+- **Conditional compilation**: All debug logs now properly wrapped with `#if DEBUG` / `#endif`

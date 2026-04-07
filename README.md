@@ -16,6 +16,7 @@ https://www.nexusmods.com/stardewvalley/mods/44170
 - **Visual Alert**: When something needs attention, the Farm Computer item will pulse with a light blue aura (similar to the Junimo Hut effect).
 - **Simple Interaction**: Click on the Farm Computer to make the aura stop (acknowledges the alert).
 - **No Configuration Needed**: Works out of the box with sensible defaults.
+- **Multi-Tile Interaction**: Supports big craftable Farm Computer (2x2 tiles) - click anywhere on the object to stop the aura.
 
 ## Installation
 
@@ -54,4 +55,6 @@ If you want to build the mod yourself:
 - **False alerts**: The scan happens once per day at 6:00 AM. If you harvest crops after the scan, the aura will remain until you interact with the Farm Computer.
 - **Cask alerts**: Casks will only trigger alerts when the aged product reaches iridium quality (quality value 4). Silver (1) and gold (2) quality items will not trigger alerts.
 - **Performance issues**: The scan is optimized and should not cause lag even on large farms.
+- **Click not working on big Farm Computer**: The Farm Computer is a 2x2 big craftable - you can click anywhere on its 4 tiles to stop the aura. Version 1.1.1+ has improved multi-tile detection.
+- **Console log spam**: Debug logs are only visible in DEBUG builds. Release versions have minimal logging to prevent console spam.
 

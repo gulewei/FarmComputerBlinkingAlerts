@@ -22,7 +22,7 @@
   <!-- https://github.com/Pathoschild/SMAPI-ModBuildWorkflow?tab=readme-ov-file#requirements -->
   <PropertyGroup>
     <ModZipPath>$(MSBuildThisFileDirectory)/_releases</ModZipPath>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
   </PropertyGroup>
 
 </Project>
