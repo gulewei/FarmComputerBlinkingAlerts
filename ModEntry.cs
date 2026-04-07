@@ -104,9 +104,6 @@ namespace FarmComputerBlinkingAlerts
         {
             if (needsAttention)
             {
-#if DEBUG
-                this.Monitor.Log($"OnUpdateTicked: needsAttention={needsAttention}, updating effect", LogLevel.Debug);
-#endif
                 effect!.Update();
             }
         }
@@ -118,13 +115,7 @@ namespace FarmComputerBlinkingAlerts
         {
             if (needsAttention)
             {
-#if DEBUG
-                this.Monitor.Log($"OnRendered: needsAttention={needsAttention}, drawing effect", LogLevel.Debug);
-#endif
                 var computer = tracker!.GetTrackedComputer();
-#if DEBUG
-                this.Monitor.Log($"OnRendered: tracked computer={(computer != null ? "found" : "null")}", LogLevel.Debug);
-#endif
                 effect!.Draw(e.SpriteBatch, computer);
             }
         }

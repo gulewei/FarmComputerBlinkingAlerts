@@ -43,9 +43,6 @@ namespace FarmComputerBlinkingAlerts
                     // Simple validation: check if object appears to be a Farm Computer
                     if (this.IsFarmComputer(this.lastPlacedComputer))
                     {
-#if DEBUG
-                        this.monitor.Log($"Using tracked Farm Computer.", LogLevel.Debug);
-#endif
                         return this.lastPlacedComputer;
                     }
                     else

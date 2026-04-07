@@ -87,22 +87,46 @@ namespace FarmComputerBlinkingAlerts
             if (location == null)
                 return false;
 
+            // First, check exact tile match (for single-tile objects)
             if (location.objects.TryGetValue(cursorTile, out var obj))
             {
                 bool isFarmComputer = this.IsFarmComputer(obj);
 #if DEBUG
-                this.monitor.Log($"IsInteractingWithFarmComputer: object found, name={obj.DisplayName}, ParentSheetIndex={obj.ParentSheetIndex}, isFarmComputer={isFarmComputer}", LogLevel.Debug);
+                this.monitor.Log($"IsInteractingWithFarmComputer: object found at exact tile, name={obj.DisplayName}, ParentSheetIndex={obj.ParentSheetIndex}, isFarmComputer={isFarmComputer}", LogLevel.Debug);
 #endif
                 return isFarmComputer;
             }
-            else
+
+            // For multi-tile objects (like big craftables), check adjacent tiles (3x3 area around cursor)
+            // Farm Computer is 2x2 tiles, so clicking any of its 4 tiles should trigger interaction
+            for (int dx = -1; dx <= 1; dx++)
             {
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    var checkTile = new Microsoft.Xna.Framework.Vector2(cursorTile.X + dx, cursorTile.Y + dy);
+                    if (location.objects.TryGetValue(checkTile, out var adjacentObj))
+                    {
+                        bool isFarmComputer = this.IsFarmComputer(adjacentObj);
 #if DEBUG
-                this.monitor.Log($"IsInteractingWithFarmComputer: no object at cursor tile", LogLevel.Debug);
+                        this.monitor.Log($"IsInteractingWithFarmComputer: adjacent tile ({dx},{dy}) - name={adjacentObj.DisplayName}, ParentSheetIndex={adjacentObj.ParentSheetIndex}, isFarmComputer={isFarmComputer}", LogLevel.Debug);
 #endif
+                        if (isFarmComputer)
+                        {
+#if DEBUG
+                            this.monitor.Log($"IsInteractingWithFarmComputer: Farm Computer found at adjacent tile ({dx},{dy})", LogLevel.Debug);
+#endif
+                            return true;
+                        }
+                    }
+                }
             }
 
+#if DEBUG
+            this.monitor.Log($"IsInteractingWithFarmComputer: no Farm Computer found at cursor or nearby tiles", LogLevel.Debug);
+#endif
             return false;
         }
+
+
     }
 }
